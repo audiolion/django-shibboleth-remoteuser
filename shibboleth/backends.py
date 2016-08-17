@@ -35,7 +35,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         username = self.clean_username(remote_user)
         field_names = [x.name for x in User._meta.get_fields()]
         shib_user_params = dict([(k, shib_meta[k]) for k in field_names if k in shib_meta])
-        email = shib_user_params.pop('email')
+        shib_user_params.pop('rit_username')
         # Note that this could be accomplished in one try-except clause, but
         # instead we use get_or_create when creating unknown users since it has
         # built-in safeguards for multiple threads.
@@ -43,7 +43,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             try:
                 user = User.objects.get(rit_username=username)
             except User.DoesNotExist:
-                user, created = User.objects.create_user(rit_username=username, email=email, **shib_user_params)
+                user, created = User.objects.create_user(rit_username=username, **shib_user_params)
                 if created:
                     """
                     @note: setting password for user needs on initial creation of user instead of after auth.login() of middleware.
