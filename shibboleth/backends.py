@@ -35,29 +35,26 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         username = self.clean_username(remote_user)
         field_names = [x.name for x in User._meta.get_fields()]
         shib_user_params = dict([(k, shib_meta[k]) for k in field_names if k in shib_meta])
-        user_email = shib_user_params.get('email')
         # Note that this could be accomplished in one try-except clause, but
         # instead we use get_or_create when creating unknown users since it has
         # built-in safeguards for multiple threads.
         if self.create_unknown_user:
-            try:
-                user = User.objects.get(rit_username=username)
-            except User.DoesNotExist:
-                user, created = User.objects.create_user(rit_username=username, password=None, email=user_email)
-                if created:
-                    """
-                    @note: setting password for user needs on initial creation of user instead of after auth.login() of middleware.
-                    because get_session_auth_hash() returns the salted_hmac value of salt and password.
-                    If it remains after the auth.login() it will return a different auth_hash
-                    than what's stored in session "request.session[HASH_SESSION_KEY]".
-                    Also we don't need to update the user's password everytime he logs in.
-                    """
-                    user.set_unusable_password()
-                    user.save()
-                    user = self.configure_user(user)
+            user, created = User.objects.get_or_create(username=username, defaults=shib_user_params)
+            if created:
+                """
+                @note: setting password for user needs on initial creation of user instead of after auth.login() of middleware.
+                because get_session_auth_hash() returns the salted_hmac value of salt and password.
+                If it remains after the auth.login() it will return a different auth_hash
+                than what's stored in session "request.session[HASH_SESSION_KEY]".
+                Also we don't need to update the user's password everytime he logs in.
+                """
+                user.set_unusable_password()
+                user.save()
+                user = self.configure_user(user)
+                user.setup()
         else:
             try:
-                user = User.objects.get(rit_username=username)
+                user = User.objects.get(username=username)
             except User.DoesNotExist:
                 return
         # After receiving a valid user, we update the the user attributes according to the shibboleth
