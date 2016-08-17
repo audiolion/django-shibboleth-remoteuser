@@ -43,7 +43,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             try:
                 user = User.objects.get(rit_username=username)
             except User.DoesNotExist:
-                user, created = User.objects.create_user(rit_username=username, **shib_user_params)
+                user, created = User.objects.create_user(rit_username=username, password=None, **shib_user_params)
                 if created:
                     """
                     @note: setting password for user needs on initial creation of user instead of after auth.login() of middleware.
