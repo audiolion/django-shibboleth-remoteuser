@@ -41,7 +41,7 @@ class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
         # getting passed in the headers, then the correct user is already
         # persisted in the session and we don't need to continue.
         if request.user.is_authenticated():
-            if request.user.username == self.clean_username(username, request):
+            if request.user.rit_username == self.clean_username(username, request):
                 return
 
         # Make sure we have all required Shiboleth elements before proceeding.
@@ -60,7 +60,7 @@ class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
             # by logging the user in.
             request.user = user
             auth.login(request, user)
-            
+
             # Upgrade user groups if configured in the settings.py
             # If activated, the user will be associated with those groups.
             if GROUP_ATTRIBUTES:

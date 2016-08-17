@@ -7,11 +7,11 @@
       <h1>User stuff</h1>
       <p>The mapped shib attributes will display here.</p>
       <ul>
-          <li>username: {{ user.username }}</li>
-          <li>name: {{ user.first_name }} {{ user.last_name }}</li>
+          <li>username: {{ user.rit_username }}</li>
+          <li>name: {{ user.profile.first_name }} {{ user.profile.last_name }}</li>
           <li>email: {{ user.email }}</li>
       </ul>
-    </div> 
+    </div>
 </body>
 </html>
 
