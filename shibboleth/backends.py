@@ -51,7 +51,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
                 user.set_unusable_password()
                 user.save()
                 user = self.configure_user(user)
-                user.setup()
+                user.setup(user)
         else:
             try:
                 user = User.objects.get(rit_username=username)
