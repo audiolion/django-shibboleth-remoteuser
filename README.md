@@ -1,3 +1,6 @@
+# DO NOT CLONE
+This repository is currently a custom fork of [Brown University Library's](https://github.com/Brown-University-Library/django-shibboleth-remoteuser) code, please use that repository.
+
 django-shibboleth-remoteuser
 ============================
 
