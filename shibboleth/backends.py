@@ -49,6 +49,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
                 Also we don't need to update the user's password everytime he logs in.
                 """
                 user.set_unusable_password()
+                user.is_active = True
                 user.save()
                 user = self.configure_user(user)
                 user.setup(user)
